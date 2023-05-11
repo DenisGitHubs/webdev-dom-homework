@@ -2,136 +2,166 @@
 <html>
 
 <head>
-  <title>Проект "Комменты"</title>
-  <meta charset="utf-8" />
-  <link rel="stylesheet" href="styles.css" />
+    <title>Проект "Комменты"</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
-  <div class="container">
-    <ul class="comments" id="list-comments">
+    <div class="container">
+        <ul class="comments" id="list-comments">
 
-    </ul>
-    <div class="add-form">
-      <input id="input-name" type="text" class="add-form-name" placeholder="Введите ваше имя" />
-      <textarea id="input-text" type="textarea" class="add-form-text" placeholder="Введите ваш коментарий"
-        rows="4"></textarea>
-      <div class="add-form-row">
-        <button class="add-form-button" id="button-enter">Написать</button>
-      </div>
+        </ul>
+        <div class="add-form">
+            <input id="input-name" type="text" class="add-form-name" placeholder="Введите ваше имя" />
+            <textarea id="input-text" type="textarea" class="add-form-text" placeholder="Введите ваш коментарий"
+                rows="4"></textarea>
+            <div class="add-form-row">
+                <button class="add-form-button" id="button-enter">Написать</button>
+            </div>
+        </div>
     </div>
-  </div>
 </body>
 
 <script>
-  "use strict";
+    "use strict";
 
-
-  const allUsersAndComments = [
-    {
-      name: 'Глеб Фокин',
-      time: '12.02.22 12:18',
-      comment: 'Это будет первый комментарий на этой странице',
-      counter: 3,
-    },
-    {
-      name: 'Варвара Н.',
-      time: '13.02.22 19:22',
-      comment: 'Мне нравится как оформлена эта страница! ❤',
-      counter: 75,
-    },
-  ];
-  const listComments = document.getElementById("list-comments");
-  const renderUsers = () => {
-    const usersHtml = allUsersAndComments.map((user) => {
-      return `<li class="comment">
-        <div class="comment-header">
-          <div>${user.name}</div>
-          <div>${user.time}</div>
-        </div>
-        <div class="comment-body">
-          <div class="comment-text">
-            ${user.comment}
-          </div>
-        </div>
-        <div class="comment-footer">
-          <div class="likes">
-            <span class="likes-counter">${user.counter}</span>
-            <button class="like-button"></button>
-          </div>
-        </div>
-      </li>`;
-    })
-      .join("")
-    listComments.innerHTML = usersHtml;
-  };
-
-
-  function refresh() {
-    const likesUp = document.querySelectorAll(".like-button");
-    for (const likeUp of likesUp) {
-      
-      likeUp.addEventListener('click', () => {
-        if (likeUp.classList.contains("-active-like") === true) {
-          const counters = likeUp.parentNode.getElementsByClassName('likes-counter');
-          if (counters.length == 0) return;
-          counters[0].innerHTML = parseInt(counters[0].innerHTML) - 1;
-          likeUp.classList.remove('-active-like')
-
-        } else {
-          likeUp.classList.add('-active-like');
-          const counters = likeUp.parentNode.getElementsByClassName('likes-counter');
-          if (counters.length == 0) return;
-          counters[0].innerHTML = parseInt(counters[0].innerHTML) + 1;
-        }
-      });
+    const listComments = document.getElementById("list-comments");
+    const nameText = document.getElementById("input-name");
+    const text = document.getElementById("input-text");
+    const buttonEnter = document.getElementById("button-enter");
+    let currentDate = new Date();
+    const option = {
+        hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'long'
     };
-  }
+
+    const textAreaText = document.getElementById('input-text');
+    let quoteText = '';
 
 
-  renderUsers();
-  refresh();
+    let allUsersAndComments = [
+        {
+            name: 'Глеб Фокин',
+            time: '12.02.22 12:18',
+            comment: "Это будет первый комментарий на этой странице",
+            counter: 3,
+            quoteText: '',
+            isLiked: false,
+        },
+        {
+            name: 'Варвара Н.',
+            time: '13.02.22 19:22',
+            comment: 'Мне нравится как оформлена эта страница! ❤',
+            counter: 75,
+            quoteText: '',
+            isLiked: true,
+        },
+    ];
 
 
-
-  const nameText = document.getElementById("input-name");
-  const text = document.getElementById("input-text");
-  const buttonEnter = document.getElementById("button-enter");
-  const currentDate = new Date();
-  const option = {
-    hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'long'
-  };
-
-
-
-
-  buttonEnter.addEventListener("click", () => {
-    if (nameText.value === "" && text.value === "") {
-      return;
-    } else {
-      const oldListComments = listComments.innerHTML;
-      listComments.innerHTML =
-        oldListComments +
-        `        <li class="comment">
-          <div class="comment-header">
-            <div>${nameText.value}</div>
-            <div>${currentDate.toLocaleDateString('ru-RU', option)}</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">
-              ${text.value}
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">0</span>
-              <button class="like-button"></button>
-            </div>
-          </div>
-        </li>`;
+    const renderUsers = () => {
+        const usersHtml = allUsersAndComments.map((user, index) => {
+            return `<li class="comment">
+    <div class="comment-header">
+      <div class="name-user">${user.name}</div>
+      <div>${user.time}</div>
+    </div>
+    <div class="comment-body">
+        <div class="quote">${user.quoteText}</div>
+      <div class="comment-text">
+        ${user.comment}
+      </div>
+    </div>
+    <div class="comment-footer">
+      <div class="likes">
+        <span class="likes-counter">${user.counter}</span>
+        <button class="${user.isLiked ? 'like-button -active-like' : 'like-button'}" data-index=${index}></button>
+      </div>
+    </div>
+  </li>`;
+        })
+            .join("")
+        listComments.innerHTML = usersHtml;
         refresh();
+
+    };
+
+
+
+    function refresh() {
+
+        const likesUp = document.querySelectorAll(".like-button");
+        for (const likeUp of likesUp) {
+            likeUp.addEventListener('click', (event) => {
+                event.stopPropagation();
+                let found = allUsersAndComments[likeUp.dataset.index];
+                if (found.isLiked) {
+
+                    found.counter--;
+                    found.isLiked = false;
+
+                } else {
+
+                    found.counter++;
+                    found.isLiked = true;
+
+                };
+                renderUsers();
+            });
+
+        };
+        quotes();
+
     }
-  });
+
+
+    renderUsers();
+
+
+
+
+    buttonEnter.addEventListener("click", () => {
+        if (nameText.value === "" && text.value === "") {
+            return;
+        } else {
+            allUsersAndComments.push({
+                name: nameText.value.replaceAll("&", "&amp;")
+                    .replaceAll("<", "&lt;")
+                    .replaceAll(">", "&gt;")
+                    .replaceAll('"', "&quot;"),
+                time: new Date().toLocaleDateString('ru-RU', option),
+                comment: text.value.replaceAll("&", "&amp;")
+                    .replaceAll("<", "&lt;")
+                    .replaceAll(">", "&gt;")
+                    .replaceAll('"', "&quot;"),
+                counter: 0,
+                quoteText: quoteText,
+                isLiked: false,
+            })
+
+            renderUsers();
+            quoteText = "";
+            nameText.value = "";
+            text.value = "";
+
+            textAreaText.placeholder = `Введите ваше сообщение`;
+
+        }
+    });
+
+
+    function quotes() {
+        const answersComments = document.getElementsByClassName('comment');
+        for (const answerComment of answersComments) {
+            answerComment.addEventListener('click', () => {
+
+                const comment = answerComment.getElementsByClassName('comment-text')[0].innerHTML;
+                const userNameComment = answerComment.getElementsByClassName("name-user")[0].innerHTML;
+                textAreaText.placeholder = `Введите ваш ответ пользователю ${userNameComment} `;
+                quoteText = `${comment} ${userNameComment}`;
+            })
+        }
+    };
 
 
 </script>
