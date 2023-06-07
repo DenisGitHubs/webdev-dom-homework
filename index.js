@@ -5,7 +5,6 @@ import { renderUsers } from "./render.js";
 import { token } from "./render.js"
 
 
-    let currentDate = new Date();
 
 
     const textAreaText = document.getElementById('input-text');

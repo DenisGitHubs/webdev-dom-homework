@@ -14,7 +14,8 @@ export function getComments({ token }) {
 };
 
 
-export function addComment({ buttonEnter, nameText, text, option, token }) {
+export function addComment({ buttonEnter, nameText, text, token }) {
+    
     buttonEnter.disabled = true;
     buttonEnter.textContent = 'Комментарий добавляется';
     fetch(host, {
@@ -23,7 +24,7 @@ export function addComment({ buttonEnter, nameText, text, option, token }) {
             Authorization: token,
         },
         body: JSON.stringify({
-            date: new Date().toLocaleDateString('ru-RU', option),
+            date: new Date().toLocaleDateString(),
             likes: 0,
             isLiked: false,
             text: text.value.replaceAll("&", "&amp;")
