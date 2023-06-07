@@ -1,16 +1,21 @@
 
 import { allUsersAndComments } from "./index.js"
 import { addComment, loginUser, registerUser } from "./api.js";
+// import { format } from "date-fns/fp";
+import { format } from "date-fns";
 const listComments = document.getElementById("list-comments");
 const formAddComments = document.getElementById("add-comments");
 export let token = null;
 export const renderUsers = () => {
     
     const usersHtml = allUsersAndComments.map((user, index) => {
+        // const userTime = user.date;
+        // console.log(userTime);
+        const createDate = format(new Date(user.date), 'yyyy-MM-dd hh.mm.ss');
         return `<li class="comment">
 <div class="comment-header">
   <div class="name-user">${user.author.name}</div>
-  <div>${user.date}</div>
+  <div>${createDate}</div>
 </div>
 <div class="comment-body">
   <div class="comment-text">
